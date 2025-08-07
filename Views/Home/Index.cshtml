@@ -25,3 +25,22 @@
         <button type="button" class="btn btn-secondary" onclick="clearFields()">Clear</button>
     </form>
 </div>
+
+<script>
+    function calculate() {
+        const subtotal = parseFloat(document.getElementById('subtotal').value) || 0;
+        const discount = parseFloat(document.getElementById('discount').value) || 0;
+        const discountAmount = subtotal * (discount / 100);
+        const total = subtotal - discountAmount;
+
+        document.getElementById('discountAmount').value = discountAmount.toFixed(2);
+        document.getElementById('total').value = total.toFixed(2);
+    }
+
+    function clearFields() {
+        document.getElementById('subtotal').value = '';
+        document.getElementById('discount').value = '';
+        document.getElementById('discountAmount').value = '';
+        document.getElementById('total').value = '';
+    }
+</script>
