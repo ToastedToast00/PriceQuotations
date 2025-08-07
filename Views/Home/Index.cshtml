@@ -6,14 +6,15 @@
 
 <div class="align-middle">
     <h1 class="display-4">Price Quotation</h1>
-    <form id="quotationForm" class="mt-4">
+    <form id="quotationForm" class="mt-4" onsubmit="return false;">
+        <div id="errorMessage" class="alert alert-danger" style="display:none;"></div>
         <div class="mb-3">
             <label for="subtotal" class="form-label">Subtotal</label>
             <input type="number" class="form-control" id="subtotal" step="0.01" min="0" required>
         </div>
         <div class="mb-3">
             <label for="discount" class="form-label">Discount (%)</label>
-            <input type="number" class="form-control" id="discount" step="0.01" min="0" max="100" required>
+            <input type="number" class="form-control" id="discount" step="0.01" min="1" max="100" required>
         </div>
         <div class="mb-3">
             <label class="form-label">Discount Amount</label>
@@ -29,9 +30,44 @@
 </div>
 
 <script>
+    function showError(message) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+
+    function hideError() {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = '';
+        errorDiv.style.display = 'none';
+    }
+
     function calculate() {
-        const subtotal = parseFloat(document.getElementById('subtotal').value) || 0;
-        const discount = parseFloat(document.getElementById('discount').value) || 0;
+        hideError();
+        const subtotalInput = document.getElementById('subtotal');
+        const discountInput = document.getElementById('discount');
+        const subtotalValue = subtotalInput.value;
+        const discountValue = discountInput.value;
+
+        if (subtotalValue === '' || discountValue === '') {
+            showError('Please enter both Subtotal and Discount.');
+            return;
+        }
+
+        const subtotal = parseFloat(subtotalValue);
+        const discount = parseFloat(discountValue);
+
+        if (subtotal < 0) {
+            showError('Subtotal cannot be negative.');
+            return;
+        }
+
+        if (discount < 1 || discount > 100) {
+            showError('Discount percentage must be in the range from 1-100%.');
+            discountInput.value = '';
+            return;
+        }
+
         const discountAmount = subtotal * (discount / 100);
         const total = subtotal - discountAmount;
 
@@ -44,5 +80,6 @@
         document.getElementById('discount').value = '';
         document.getElementById('discountAmount').value = '';
         document.getElementById('total').value = '';
+        hideError();
     }
 </script>
