@@ -7,25 +7,35 @@ h1.display-4 {
 }
 
 /* Arrange form fields next to their labels */
-#quotationForm .mb-3 {
+form .mb-3 {
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
+    flex-wrap: wrap; /* Allows wrapping on small screens */
 }
 
-#quotationForm .form-label {
+form .form-label {
     min-width: 140px;
     margin-bottom: 0;
     margin-right: 1rem;
     font-weight: 500;
+    flex-shrink: 0;
 }
 
-#quotationForm .form-control {
-    flex: 1 1 0;
-    max-width: 220px;
+form .form-control {
+    flex: 1 1 220px;
+    max-width: 300px;
+    min-width: 120px;
+}
+
+/* Validation message styling */
+form .text-danger {
+    margin-left: 1rem;
+    flex-basis: 100%;
+    margin-top: 0.25rem;
 }
 
 /* Optional: Add some spacing to the buttons */
-#quotationForm .btn {
+form .btn {
     margin-right: 0.5rem;
 }

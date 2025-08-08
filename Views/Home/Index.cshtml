@@ -1,85 +1,40 @@
-﻿<link href="~/css/quotations.css" rel="stylesheet" />
+﻿@model PriceQuotations.Models.Quotation
 
-@{
-    ViewData["Title"] = "Home Page";
+<link rel="stylesheet" href="~/css/quotations.css" />
+
+<h1 class="display-4">Price Quotation</h1>
+
+<form asp-action="Index" method="post" class="mt-4">
+    <div class="mb-3">
+        <label asp-for="Subtotal" class="form-label"></label>
+        <input asp-for="Subtotal" class="form-control" />
+        <span asp-validation-for="Subtotal" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DiscountPercent" class="form-label"></label>
+        <input asp-for="DiscountPercent" class="form-control" />
+        <span asp-validation-for="DiscountPercent" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Discount Amount</label>
+        <input type="text" class="form-control"
+               value="@(Model.Subtotal == 0 || Model.DiscountPercent == 0 ? "" : Model.DiscountAmount.ToString("C"))"
+               readonly />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Total</label>
+        <input type="text" class="form-control"
+               value="@(Model.Subtotal == 0 && Model.DiscountPercent == 0 ? "" : Model.Total.ToString("C"))"
+               readonly />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Calculate</button>
+    <a asp-action="Index" class="btn btn-secondary">Clear</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
-
-<div class="align-middle">
-    <h1 class="display-4">Price Quotation</h1>
-    <form id="quotationForm" class="mt-4" onsubmit="return false;">
-        <div id="errorMessage" class="alert alert-danger" style="display:none;"></div>
-        <div class="mb-3">
-            <label for="subtotal" class="form-label">Subtotal</label>
-            <input type="number" class="form-control" id="subtotal" step="0.01" min="0" required>
-        </div>
-        <div class="mb-3">
-            <label for="discount" class="form-label">Discount (%)</label>
-            <input type="number" class="form-control" id="discount" step="0.01" min="1" max="100" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Discount Amount</label>
-            <input type="text" class="form-control" id="discountAmount" readonly>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Total</label>
-            <input type="text" class="form-control" id="total" readonly>
-        </div>
-        <button type="button" class="btn btn-primary" onclick="calculate()">Calculate</button>
-        <button type="button" class="btn btn-secondary" onclick="clearFields()">Clear</button>
-    </form>
-</div>
-
-<script>
-    function showError(message) {
-        const errorDiv = document.getElementById('errorMessage');
-        errorDiv.textContent = message;
-        errorDiv.style.display = 'block';
-    }
-
-    function hideError() {
-        const errorDiv = document.getElementById('errorMessage');
-        errorDiv.textContent = '';
-        errorDiv.style.display = 'none';
-    }
-
-    function calculate() {
-        hideError();
-        const subtotalInput = document.getElementById('subtotal');
-        const discountInput = document.getElementById('discount');
-        const subtotalValue = subtotalInput.value;
-        const discountValue = discountInput.value;
-
-        if (subtotalValue === '' || discountValue === '') {
-            showError('Please enter both Subtotal and Discount.');
-            return;
-        }
-
-        const subtotal = parseFloat(subtotalValue);
-        const discount = parseFloat(discountValue);
-
-        if (subtotal < 0) {
-            showError('Subtotal cannot be negative.');
-            return;
-        }
-
-        if (discount < 1 || discount > 100) {
-            showError('Discount percentage must be in the range from 1-100%.');
-            discountInput.value = '';
-            return;
-        }
-
-        const discountAmount = subtotal * (discount / 100);
-        const total = subtotal - discountAmount;
-
-        document.getElementById('discountAmount').value = discountAmount.toFixed(2);
-        document.getElementById('total').value = total.toFixed(2);
-    }
-
-    function clearFields() {
-        document.getElementById('subtotal').value = '';
-        document.getElementById('discount').value = '';
-        document.getElementById('discountAmount').value = '';
-        document.getElementById('total').value = '';
-        hideError();
-    }
-</script>
