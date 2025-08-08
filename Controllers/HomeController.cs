@@ -13,9 +13,17 @@ namespace PriceQuotations.Controllers
             _logger = logger;
         }
 
+        // GET: Home/Index
         public IActionResult Index()
         {
-            return View();
+            // Pass a new Quotation model to the view
+            return View(new Quotation());
+        }
+
+        [HttpPost]
+        public IActionResult Index(Quotation model)
+        {
+            return View(model);
         }
 
         public IActionResult Privacy()
